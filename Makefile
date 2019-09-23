@@ -5,7 +5,7 @@ all: $(proj).o Planet.o Galaxy.o
 	g++ $(proj).o Planet.o Galaxy.o -o $(proj)
 
 $(proj).o: $(proj).cpp 
-	g++ -c $(CFLAGS) -D TEST3 -D TEST4 -D TEST5 -D TEST6 -D TEST7 -D TEST8 -D TEST9 -D TEST10 -D TEST11 -D TEST12 -D TEST13 $(proj).cpp 
+	g++ -c $(CFLAGS) $(proj).cpp 
 
 Planet.o: Planet.cpp Planet.h 
 	g++ -c $(CFLAGS) Planet.cpp
@@ -20,4 +20,4 @@ clean:
 	rm -rf *.o $(proj)
 
 memcheck: all
-	valgrind -v ./$(proj)
+	valgrind -v --leak-check=full ./$(proj)

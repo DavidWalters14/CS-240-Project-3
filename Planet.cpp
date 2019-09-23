@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <cmath>
+#include <cfloat>
 using namespace std;
 
 Planet::Planet(std::string str, long xc, long yc, long zc){
@@ -10,6 +11,9 @@ Planet::Planet(std::string str, long xc, long yc, long zc){
 	x=xc;
 	y=yc;
 	z=zc;
+	dist=DBL_MAX;
+	op=nullptr;
+	flag = false;
 }
 
 string Planet::getName(){

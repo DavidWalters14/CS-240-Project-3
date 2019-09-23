@@ -31,17 +31,17 @@ void checkAdjacencies(Galaxy &map, string planet, vector<string> &adjacents){
     }
 }
 
-// void checkPath(Galaxy &map, vector<string> &cities, string start, string dest){
-//     Planet * startc = map.findByName(start);
-//     Planet * destc = map.findByName(dest);
-//     vector<Planet *> route = map.shortestPath(startc, destc);
-//     assert(route.size() == cities.size());
-//     int i = 0;
-//     for(auto r: route){
-//         assert(r->getName() == cities.at(i));
-//         i++;
-//     }
-// }
+void checkPath(Galaxy &map, vector<string> &cities, string start, string dest){
+     Planet * startc = map.findByName(start);
+     Planet * destc = map.findByName(dest);
+     vector<Planet *> route = map.shortestPath(startc, destc);
+     assert(route.size() == cities.size());
+     int i = 0;
+     for(auto r: route){
+         assert(r->getName() == cities.at(i));
+         i++;
+     }
+ }
 
 int main(int argc, char *argv[]){
     #ifndef TEST0

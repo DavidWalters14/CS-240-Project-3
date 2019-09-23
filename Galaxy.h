@@ -8,6 +8,7 @@ public:
 	unsigned int galsize;
 	std::vector<Planet *> planets;
 	Galaxy(std::string filename);
+	~Galaxy();
 	unsigned int size();
 	Planet * findByName(std::string planetName);
 	void printPlanets();

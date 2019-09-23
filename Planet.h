@@ -9,6 +9,9 @@ public:
 	long x;
 	long y;
 	long z;
+	double dist;
+	Planet * op;
+	bool flag;
 	Planet(std::string, long , long , long);
 	std::string getName();
 	long getXCoor();

@@ -10,7 +10,7 @@
 #include <cmath>
 #include <cfloat>
 #include <limits>
-#include <queue>
+#include <stack>
 
 using namespace std;
 
@@ -27,7 +27,7 @@ Galaxy::Galaxy(string filename){
 		long z;
 		while(!inFile.eof() && !inFile.fail()){
 			inFile >> id;
-			cout << id << endl;
+			//cout << id << endl;
 			inFile >> x;
 			inFile >> y;
 			inFile >> z;
@@ -55,10 +55,10 @@ Galaxy::Galaxy(string filename){
 		}	//changed to pointer
 		for(int j = 0 ; j < planets.size() ; j++){
 			double maxdist = 0;
-			cout << i << endl;
-			cout << j << endl;
+			//cout << i << endl;
+			//cout << j << endl;
 			if(strcmp(planets[j]->getName().c_str(), planets[i]->getName().c_str()) == 0) {
-				cout << "nope" << endl;
+				//cout << "nope" << endl;
 				//empty
 			}
 			else{
@@ -98,34 +98,65 @@ Galaxy::Galaxy(string filename){
 // 	return ret;
 // }
 vector<Planet *> Galaxy::shortestPath(Planet * start, Planet * dest){
-	queue<Planet *> q;
-	vector<double> dist;
-	vector<Planet *> op;
-	for(int i = 0 ; i < planets.size() ; i++){
-		dist.push_back(DBL_MAX);
-		op.push_back(nullptr);
+	if(start==dest){
+		vector<Planet *> ret;
+		ret.push_back(start);
+		return ret;
 	}
-	int index = 0;
-	for(int i = 0 ; i < planets.size() ; i++){
-		q.push(planets[i]);
-		if(planets[i]==start){
-			index = i;
-		}
-	}
-	for(auto i = start->adjacents.begin() ; i != start->adjacents.end() ; i++){
-		for(int j = 0 ; j < planets.size() ; j++){
-			if(*i == planets[j]){
-				if((*i)->distanceBetween(start) < dist[j]){
-					dist[j] = (*i)->distanceBetween(start);
-					op[j] = *i;
-				}
+	Planet * curr = start;
+	curr->dist = 0;
+	while(curr->flag != true){
+		double least = DBL_MAX;
+		Planet * lep = nullptr;
+		list<Planet*> p1 = curr->getAdjacent();
+		for(auto it = p1.begin(); it != p1.end(); ++it) {
+			if(curr->distanceBetween(*it) + curr->dist < (*it)->dist){
+				(*it)->dist = curr->distanceBetween(*it) + curr->dist;
+				(*it)->op = curr;
+			}
+			if(curr->distanceBetween(*it) < least && (*it)->flag == false){
+				least = curr->distanceBetween(*it);
+				lep = (*it);
 			}
 		}
+		if(lep!=nullptr){
+			curr->flag = true;
+			curr = lep;
+		}
+		else{
+			curr->flag = true;
+		}
 	}
+	vector<Planet *> retV;
+	Planet * ret = dest;
+	if(ret->op==nullptr){
+		return retV;
+	}
+	retV.push_back(ret);
+	while(ret!=start){
+		retV.push_back(ret->op);
+		ret = ret->op;
+	}
+	vector<Planet *> retV2;
+	for(auto it = retV.crbegin() ; it != retV.crend() ; ++it){
+		retV2.push_back(*it);
+	}
+	return retV2;
 }
 
 double Galaxy::pathDistance(Planet * start, Planet * dest){
-
+	vector<Planet *> ret = shortestPath(start,dest);
+	double sum = 0;
+	if(ret.size()==0){
+		return (1.0/0.0);
+	}
+	if(ret.size()==1){
+		return 0;
+	}
+	for(int i = 0 ; i < ret.size()-1 ; i++){
+		sum+=ret[i]->distanceBetween(ret[i+1]);
+	}
+	return sum;
 }
 unsigned int Galaxy::size() {
 	return galsize;
@@ -139,7 +170,7 @@ Planet * Galaxy::findByName(std::string planetName) {
 }
 
 void Galaxy::printPlanets() {
-	for(int i = 0; i < planets.size(); i++) {
+	/*for(int i = 0; i < planets.size(); i++) {
 		cout << "Planet Name: " << planets[i]->getName() << endl;
 		cout << "Adjacents: ";
 		list<Planet*> p1 = planets[i]->getAdjacent();
@@ -147,5 +178,10 @@ void Galaxy::printPlanets() {
 			cout << (*it)->getName() << endl;
 		}
 		cout << "_________________________________________________" << endl;
+	}*/
+}
+Galaxy::~Galaxy(){
+	for(int i = 0 ; i < galsize ; i++){
+		delete planets[i];	
 	}
 }
